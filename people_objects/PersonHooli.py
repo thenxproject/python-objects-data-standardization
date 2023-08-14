@@ -1,3 +1,5 @@
+from openpyxl.pivot import record
+
 from people_objects.Person import Person
 
 
@@ -32,6 +34,35 @@ class PersonHooli(Person):
         self.salary: str = salary
         self.current_employee: bool = bool(current_employee)
 
+    __key_map_str = {
+        "FirstName": "first_name",
+        "LastName": "last_name",
+        "EmailAddress": "email",
+        "Phone": "phone_number",
+        "Line1": "street_address",
+        "Line2": "unit",
+        "City": "city",
+        "State": "state",
+        "Zip": "zip_code",
+        "Title": "title",
+        "Department": "department",
+        "Salary": "salary"
+    }
+
+    __key_map_bool = {
+        "CurrentEmployee": "current_employee"
+    }
+
     def to_person(self) -> Person:
         """Returns a Person object using only the data from the person super class."""
-        return super()._to_person()
+
+        return super().to_person()
+
+    def from_record(self, rec: record):
+        """Populates person data with data from record."""
+
+        for key in self.__key_map_str.keys():
+            self.set(self.__key_map_str[key], rec[key])
+
+        for key in self.__key_map_bool.keys():
+            self.set(self.__key_map_bool[key], bool(rec[key]))
